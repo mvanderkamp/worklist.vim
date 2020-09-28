@@ -5,7 +5,6 @@ endif
 let did_worklist_vim = 1
 
 " Prepare options
-let g:worklist_note_prefix = get(g:, 'worklist_note_prefix', 'NOTE: ')
 let g:worklist_incomplete_text = get(g:, 'worklist_incomplete_text', '[ ]')
 let g:worklist_complete_text = get(g:, 'worklist_complete_text', '[X]')
 let g:worklist_dir = get(g:, 'worklist_dir', $HOME .. '/.vim')
@@ -43,11 +42,7 @@ function! WorklistQfTextFunc(info)
             let text ..= '|' .. g:worklist_complete_text .. '|'
         endif
 
-        if !empty(get(item, 'note', ''))
-            let text ..= g:worklist_note_prefix .. item.note
-        else
-            let text ..= item.text
-        endif
+        let text ..= item.text
 
         call add(lines, text)
     endfor
@@ -109,6 +104,28 @@ function! WorklistNote()
     call inputrestore()
 
     call WorklistShowQf('r')
+endfunction
+
+let s:last_line = -1
+
+" Show a popup with the note for the current worklist item
+function! WorklistShowNotePopup()
+    if getqflist({'title': 1}).title == 'worklist'
+        let index = line('.') - 1
+        if index == s:last_line
+            return
+        endif
+        let s:last_line = index
+
+        let item = s:worklist[index]
+        if !empty(get(item, 'note', ''))
+            let notewinid = popup_atcursor(item.note, {
+                        \   'border': [1, 1, 1, 1],
+                        \   'borderchars': [' '],
+                        \   'moved': [index + 1, 0, 999],
+                        \ })
+        endif
+    endif
 endfunction
 
 " Remove the current item from the worklist
@@ -179,12 +196,27 @@ endfunction
 
 " autosave and autoload
 if g:worklist_persist
-    augroup worklist_autocmds
+    augroup worklist_persist_autocmds
         autocmd!
         autocmd VimEnter * call WorklistLoad(v:true)
         autocmd VimLeave * call WorklistSave()
     augroup END
 endif
+
+function! WorklistStartPopupAutocmds()
+    if &filetype != 'qf'
+        return
+    endif
+    augroup worklist_popup_autocmds
+        autocmd!
+        autocmd CursorMoved <buffer> call WorklistShowNotePopup()
+    augroup END
+endfunction
+
+augroup worklist_window_autocmds
+    autocmd!
+    autocmd FileType qf call WorklistStartPopupAutocmds()
+augroup END
 
 " Define ex commands for the primary functions
 command! WorklistAdd    call WorklistAdd()

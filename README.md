@@ -51,11 +51,6 @@ check out:
 
 # Configuration
 
-The text that is shown before a note can be defined with
-`g:worklist_note_prefix` (default: `'NOTE: '`):
-
-    `let g:worklist_note_prefix = ''`
-
 The text that is shown to indicate an incomplete item can be defined with
 `g:worklist_incomplete_text` (default: `'[ ]'`):
 

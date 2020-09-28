@@ -18,7 +18,6 @@ CONTENTS                                        *worklist* *worklist-contents*
         3.6 WorklistSort ...................... |worklist-:WorklistSort|
         3.7 WorklistToggle .................... |worklist-:WorklistToggle|
     4. Configuration .......................... |worklist-configuration|
-        4.1 worklist_note_prefix .............. |worklist-note-prefix|
         4.2 worklist_incomplete_text .......... |worklist-incomplete-text|
         4.3 worklist_complete_text ............ |worklist-complete-text|
         4.4 worklist_dir ...................... |worklist-dir|
@@ -99,15 +98,6 @@ COMMANDS                                        *worklist-commands*
 
 ==============================================================================
 CONFIGURATION                                   *worklist-configuration*
-
-------------------------------------------------------------------------------
-                                                *worklist-note-prefix*
-The text that is shown before a note can be defined with
-`g:worklist_note_prefix`:
-
-    `let g:worklist_note_prefix = ''`
-
-Default: `'NOTE: '`
 
 ------------------------------------------------------------------------------
                                                 *worklist-incomplete-text*
