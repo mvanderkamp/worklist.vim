@@ -1,0 +1,159 @@
+*worklist.txt*  A quickfix todo list
+
+Author: Michael van der Kamp
+License: Same terms as vim itself (see |license|)
+
+
+==============================================================================
+CONTENTS                                        *worklist* *worklist-contents*
+
+    1. Introduction ........................... |worklist-introduction|
+    2. Installation ........................... |worklist-installation|
+    3. Commands ............................... |worklist-commands|
+        3.1 WorklistAdd ....................... |worklist-:WorklistAdd|
+        3.2 WorklistLoad ...................... |worklist-:WorklistLoad|
+        3.3 WorklistNote ...................... |worklist-:WorklistNote|
+        3.4 WorklistRemove .................... |worklist-:WorklistRemove|
+        3.5 WorklistSave ...................... |worklist-:WorklistSave|
+        3.6 WorklistSort ...................... |worklist-:WorklistSort|
+        3.7 WorklistToggle .................... |worklist-:WorklistToggle|
+    4. Configuration .......................... |worklist-configuration|
+        4.1 worklist_note_prefix .............. |worklist-note-prefix|
+        4.2 worklist_incomplete_text .......... |worklist-incomplete-text|
+        4.3 worklist_complete_text ............ |worklist-complete-text|
+        4.4 worklist_dir ...................... |worklist-dir|
+        4.5 worklist_file ..................... |worklist-file|
+        4.6 worklist_persist .................. |worklist-persist|
+
+
+==============================================================================
+INTRODUCTION                                    *worklist-introduction*
+
+This plugin allows you to easily keep track of a todo list in the form of
+lines in the code that you wish to return to. Instead of leaving a TODO
+comment or jumping to a TODO file and trying to explain the context, simply
+add the line to the worklist and don't let yourself complete your current task
+until all items in the worklist have been handled. Let the line itself speak
+to the context of the item, or add a note to the item in the worklist.
+
+There are no mappings set up by default.
+
+
+==============================================================================
+INSTALLATION                                    *worklist-installation*
+
+Similar to any other vim plugin, use your preferred method. If you're new,
+check out:
+
+    packages:     |packages|
+    vim-pathogen: https://github.com/tpope/vim-pathogen#readme
+    vim-plug:     https://github.com/junegunn/vim-plug
+
+
+==============================================================================
+COMMANDS                                        *worklist-commands*
+
+------------------------------------------------------------------------------
+                                                *worklist-:WorklistAdd*
+:WorklistAdd
+    To be called from a source window, _not_ the worklist. Adds the current
+    source line under the cursor to the worklist.
+
+------------------------------------------------------------------------------
+                                                *worklist-:WorklistLoad*
+:WorklistLoad
+    Loads the worklist that is saved at |g:worklist_dir|/|g:worklist_file|
+
+------------------------------------------------------------------------------
+                                                *worklist-:WorklistSave*
+:WorklistSave
+    Saves a worklist at |g:worklist_dir|/|g:worklist_file|
+
+------------------------------------------------------------------------------
+                                                *worklist-:WorklistSort*
+:WorklistSort
+    Sorts the worklist by absolute path and line number.
+
+------------------------------------------------------------------------------
+                                                *worklist-:WorklistToggle*
+:WorklistToggle
+    To be called while in the quickfix window and it is showing the worklist.
+    Toggles the "completion" state of the worklist item under the cursor.
+    Completed items will be skipped over when using quickfix navigation
+    commands such as |:cnext| and |:cprev|.
+
+------------------------------------------------------------------------------
+                                                *worklist-:WorklistNote*
+:WorklistNote
+    To be called while in the quickfix window and it is showing the worklist.
+    Opens a prompt which lets you add a note to clarify the current worklist
+    item. Notes for the current item will be shown in a popup window when in
+    the worklist.
+
+------------------------------------------------------------------------------
+                                                *worklist-:WorklistRemove*
+:WorklistRemove
+    To be called while in the quickfix window and it is showing the worklist.
+    Removes the current item from the worklist.
+
+
+==============================================================================
+CONFIGURATION                                   *worklist-configuration*
+
+------------------------------------------------------------------------------
+                                                *worklist-note-prefix*
+The text that is shown before a note can be defined with
+`g:worklist_note_prefix`:
+
+    `let g:worklist_note_prefix = ''`
+
+Default: `'NOTE: '`
+
+------------------------------------------------------------------------------
+                                                *worklist-incomplete-text*
+The text that is shown to indicate an incomplete item can be defined with
+`g:worklist_incomplete_text`:
+
+    `let g:worklist_incomplete_text = '○'`
+
+Default: `'[ ]'`
+
+------------------------------------------------------------------------------
+                                                *worklist-complete-text*
+The text that is shown to indicate a complete item can be defined with
+`g:worklist_complete_text`:
+
+    `let g:worklist_complete_text = '☻'`
+
+Default: `'[X]'`
+
+------------------------------------------------------------------------------
+                                                *worklist-dir*
+The directory where a worklist file given by |worklist-file| will be saved can
+be defined with `g:worklist_dir`:
+
+    `let g:worklist_dir = $HOME .. '/.config/vim'`
+
+Default: `$HOME .. '/.vim'`
+
+------------------------------------------------------------------------------
+                                                *worklist-file*
+The name of the worklist file to use when saving/loading from |worklist-dir|
+can be defined with `g:worklist_file`:
+
+    `let g:worklist_file = '.my-other-worklist.json'`
+
+Default: `'.worklist.json'`
+
+------------------------------------------------------------------------------
+                                                *worklist-persist*
+The worklist at |g:worklist_dir|/|g:worklist_file| is autoloaded and autosaved
+by default when entering and leaving vim. To disable this functionality, set
+`g:worklist_persist` to `v:false`:
+
+    `let g:worklist_persist = v:false`
+
+Default: `v:true`
+
+==============================================================================
+vim:tw=78:ts=8:fo=tcq2:ft=help:
