@@ -104,6 +104,7 @@ function! WorklistNote()
     call inputrestore()
 
     call WorklistShowQf('r')
+    execute string(item + 1)
 endfunction
 
 let s:last_line = -1
