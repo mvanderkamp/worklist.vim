@@ -100,7 +100,7 @@ function! WorklistNote()
     let item = line('.') - 1
 
     call inputsave()
-    let s:worklist[item].note = input('Set worklist note: ', s:worklist[item].note)
+    let s:worklist[item].note = input('Set worklist note: ', get(s:worklist[item], 'note', ''))
     call inputrestore()
 
     call WorklistShowQf('r')
