@@ -15,9 +15,14 @@ let g:worklist_popup_maxwidth = get(g:, 'worklist_popup_maxwidth', 60)
 
 " This is the list of quickfix items which defines the 'worklist'
 let s:worklist = []
+let s:last_line = -1
+let s:notewinid = -1
 
 " Add the current file and line number as a worklist item
 function! WorklistAdd()
+    if &filetype == 'qf'
+        echohl | echo 'Unabled to add quickfix entries to the worklist.' | echohl None
+    endif
     let [bufnum, lnum, col, off, curswant] = getcurpos()
     let curfile = expand('%:p')
     call add(s:worklist, {
@@ -28,7 +33,7 @@ function! WorklistAdd()
                 \   'text': trim(getline(lnum)),
                 \   'valid': v:true,
                 \ })
-    call WorklistUpdateIfCurrent()
+    call WorklistUpdateIfCurrent('$')
 endfunction
 
 " Used to provide the custom formatting for the worklist items
@@ -59,17 +64,19 @@ function! WorklistShowQf(action=' ')
     let l:height = min([10, len(s:worklist)])
     if l:height > 0
         execute 'copen ' .. l:height
+        call WorklistShowNotePopup(v:true)
     else
         echohl Error | echo 'No worklist items' | echohl None
     endif
 endfunction
 
 " Only update the worklist, don't force it to be visible
-function! WorklistUpdate(action=' ')
+function! WorklistUpdate(action=' ', idx=1)
     call setqflist([], a:action, {
                 \   'title': 'worklist',
                 \   'context': 'worklist',
                 \   'items': s:worklist,
+                \   'idx': a:idx,
                 \   'quickfixtextfunc': 'WorklistQfTextFunc',
                 \ })
 endfunction
@@ -85,8 +92,7 @@ function! WorklistToggle()
     endif
     let item = line('.') - 1
     let s:worklist[item].valid = !s:worklist[item].valid
-    call WorklistShowQf('r')
-    execute string(item + 1)
+    call WorklistUpdate('r', item + 1)
 endfunction
 
 " Show a note for this line instead of the code
@@ -105,11 +111,9 @@ function! WorklistNote()
     let s:worklist[item].note = input('Set worklist note: ', get(s:worklist[item], 'note', ''))
     call inputrestore()
 
-    call WorklistShowQf('r')
-    execute string(item + 1)
+    call WorklistUpdate('r', item + 1)
+    call WorklistShowNotePopup(v:true)
 endfunction
-
-let s:last_line = -1
 
 " Show a popup with the note for the current worklist item
 function! WorklistShowNotePopup(force=v:false)
@@ -146,8 +150,7 @@ function! WorklistRemove()
     endif
     let item = line('.') - 1
     call remove(s:worklist, item)
-    call WorklistShowQf('r')
-    execute string(item)
+    call WorklistUpdate('r', item)
 endfunction
 
 " Compares two worklist items. Used for sorting.
@@ -171,9 +174,10 @@ function! WorklistSort()
 endfunction
 
 " If the worklist is the current quickfix list, update it.
-function! WorklistUpdateIfCurrent()
-    if getqflist({'title': 1}).title == 'worklist'
-        call WorklistUpdate('r')
+function! WorklistUpdateIfCurrent(idx=1)
+    let qlist = getqflist({'title': 1})
+    if qlist.title == 'worklist'
+        call WorklistUpdate('r', a:idx)
     endif
 endfunction
 
@@ -207,7 +211,7 @@ function! WorklistLoad(filename=g:worklist_file)
     if filereadable(dest)
         let data = json_decode(readfile(dest)[0])
         let s:worklist = data
-    elseif !a:silent
+    else
         echohl Error | echo 'No worklist file has been saved yet, unable to load.' | echohl None
     endif
     call WorklistUpdateIfCurrent()
@@ -236,6 +240,7 @@ function! WorklistStartPopupAutocmds()
     augroup worklist_popup_autocmds
         autocmd!
         autocmd CursorMoved <buffer> call WorklistShowNotePopup()
+        autocmd BufEnter <buffer> call WorklistShowNotePopup(v:true)
     augroup END
 endfunction
 
