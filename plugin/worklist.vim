@@ -1,5 +1,5 @@
 
-if exists('did_worklist_vim') || &cp || version < 700
+if exists('did_worklist_vim') || &cp || version < 800
     finish
 endif
 let did_worklist_vim = 1
