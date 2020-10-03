@@ -25,7 +25,7 @@ function! WorklistAdd()
                 \   'lnum': lnum,
                 \   'col': col,
                 \   'note': '',
-                \   'text': getline(lnum),
+                \   'text': trim(getline(lnum)),
                 \   'valid': v:true,
                 \ })
     call WorklistUpdateIfCurrent()
@@ -44,7 +44,7 @@ function! WorklistQfTextFunc(info)
             let text ..= '|' .. g:worklist_complete_text .. '|'
         endif
 
-        let text ..= item.text
+        let text ..= trim(item.text)
 
         call add(lines, text)
     endfor
