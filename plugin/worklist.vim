@@ -5,11 +5,13 @@ endif
 let did_worklist_vim = 1
 
 " Prepare options
+let g:worklist_autoload = get(g:, 'worklist_autoload', v:true)
+let g:worklist_autosave = get(g:, 'worklist_autosave', v:true)
 let g:worklist_incomplete_text = get(g:, 'worklist_incomplete_text', '[ ]')
 let g:worklist_complete_text = get(g:, 'worklist_complete_text', '[X]')
 let g:worklist_dir = get(g:, 'worklist_dir', $HOME .. '/.vim')
 let g:worklist_file = get(g:, 'worklist_file', '.worklist.json')
-let g:worklist_persist = get(g:, 'worklist_persist', v:true)
+let g:worklist_popup_maxwidth = get(g:, 'worklist_popup_maxwidth', 60)
 
 " This is the list of quickfix items which defines the 'worklist'
 let s:worklist = []
@@ -195,11 +197,18 @@ function! WorklistLoad(silent = v:false)
     call WorklistUpdateIfCurrent()
 endfunction
 
-" autosave and autoload
-if g:worklist_persist
-    augroup worklist_persist_autocmds
+" autoload
+if g:worklist_autoload
+    augroup worklist_autoload_autocmds
         autocmd!
         autocmd VimEnter * call WorklistLoad(v:true)
+    augroup END
+endif
+
+" autosave
+if g:worklist_autosave
+    augroup worklist_autosave_autocmds
+        autocmd!
         autocmd VimLeave * call WorklistSave()
     augroup END
 endif
