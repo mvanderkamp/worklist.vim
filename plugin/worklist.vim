@@ -179,15 +179,27 @@ function! WorklistFile()
 endfunction
 
 " Save the worklist
-function! WorklistSave()
-    let dest = WorklistFile()
+function! WorklistSave(filename=g:worklist_file)
+    if empty(a:filename)
+        let l:filename = g:worklist_file
+    else
+        let l:filename = a:filename
+    endif
+    let g:worklist_file = l:filename
+    let dest = WorklistFile(l:filename)
     let data = json_encode(s:worklist)
     call writefile([data], dest)
 endfunction
 
 " Load the worklist
-function! WorklistLoad(silent = v:false)
-    let dest = WorklistFile()
+function! WorklistLoad(filename=g:worklist_file)
+    if empty(a:filename)
+        let l:filename = g:worklist_file
+    else
+        let l:filename = a:filename
+    endif
+    let g:worklist_file
+    let dest = WorklistFile(l:filename)
     if filereadable(dest)
         let data = json_decode(readfile(dest)[0])
         let s:worklist = data
@@ -229,10 +241,10 @@ augroup worklist_window_autocmds
 augroup END
 
 " Define ex commands for the primary functions
-command! WorklistAdd    call WorklistAdd()
-command! WorklistLoad   call WorklistLoad()
-command! WorklistNote   call WorklistNote
+command! WorklistAdd call WorklistAdd()
+command! -nargs=? WorklistLoad call WorklistLoad("<args>")
+command! WorklistNote call WorklistNote()
 command! WorklistRemove call WorklistRemove()
-command! WorklistSave   call WorklistSave()
-command! WorklistSort   call WorklistSort()
+command! -nargs=? WorklistSave call WorklistSave("<args>")
+command! WorklistSort call WorklistSort()
 command! WorklistToggle call WorklistToggle()
