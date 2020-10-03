@@ -112,21 +112,25 @@ endfunction
 let s:last_line = -1
 
 " Show a popup with the note for the current worklist item
-function! WorklistShowNotePopup()
+function! WorklistShowNotePopup(force=v:false)
     if getqflist({'title': 1}).title == 'worklist'
         let index = line('.') - 1
-        if index == s:last_line
+        if index == s:last_line && !a:force
             return
         endif
         let s:last_line = index
+        call popup_close(s:notewinid)
 
         let item = s:worklist[index]
         if !empty(get(item, 'note', ''))
-            let notewinid = popup_atcursor(item.note, {
+            let s:notewinid = popup_atcursor(item.note, {
                         \   'border': [1, 1, 1, 1],
                         \   'borderchars': [' '],
                         \   'moved': [index + 1, 0, 999],
+                        \   'maxwidth': g:worklist_popup_maxwidth,
                         \ })
+            call setwinvar(s:notewinid, '&showbreak', 'NONE')
+            call setwinvar(s:notewinid, '&linebreak', 1)
         endif
     endif
 endfunction
