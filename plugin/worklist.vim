@@ -178,8 +178,8 @@ function! WorklistUpdateIfCurrent()
 endfunction
 
 " Get the full worklist file path
-function! WorklistFile()
-    return g:worklist_dir .. '/' .. g:worklist_file
+function! WorklistFile(filename)
+    return g:worklist_dir .. '/' .. a:filename
 endfunction
 
 " Save the worklist
