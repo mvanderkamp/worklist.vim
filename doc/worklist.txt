@@ -18,14 +18,14 @@ CONTENTS                                        *worklist* *worklist-contents*
         2.7 WorklistSort ...................... |worklist-:WorklistSort|
         2.8 WorklistToggle .................... |worklist-:WorklistToggle|
     3. Configuration .......................... |worklist-configuration|
-        3.1 worklist_autoload ................. |worklist_autoload|
-        3.2 worklist_autosave ................. |worklist_autosave|
-        3.3 worklist_incomplete_text .......... |worklist_incomplete_text|
-        3.4 worklist_complete_text ............ |worklist_complete_text|
-        3.5 worklist_dir ...................... |worklist_dir|
-        3.6 worklist_file ..................... |worklist_file|
-        3.7 worklist_popup_maxwidth ........... |worklist_popup_maxwidth|
-        3.8 worklist_quickfix_maxheight ....... |worklist_quickfix_maxheight|
+        3.1 worklist_autoload ................. |g:worklist_autoload|
+        3.2 worklist_autosave ................. |g:worklist_autosave|
+        3.3 worklist_incomplete_text .......... |g:worklist_incomplete_text|
+        3.4 worklist_complete_text ............ |g:worklist_complete_text|
+        3.5 worklist_dir ...................... |g:worklist_dir|
+        3.6 worklist_file ..................... |g:worklist_file|
+        3.7 worklist_popup_maxwidth ........... |g:worklist_popup_maxwidth|
+        3.8 worklist_qf_maxheight ............. |g:worklist_qf_maxheight|
 
 
 ==============================================================================
@@ -52,8 +52,9 @@ COMMANDS                                        *worklist-commands*
 
 ------------------------------------------------------------------------------
                                                 *worklist-:WorklistLoad*
-:WorklistLoad
-    Loads the worklist that is saved at |g:worklist_dir|/|g:worklist_file|
+:WorklistLoad [filename]
+    Loads the worklist that is saved at |g:worklist_dir|/|g:worklist_file|.
+    If [filename] is provided, it is stored as |g:worklist_file|.
 
 ------------------------------------------------------------------------------
                                                 *worklist-:WorklistNote*
@@ -71,14 +72,15 @@ COMMANDS                                        *worklist-commands*
 
 ------------------------------------------------------------------------------
                                                 *worklist-:WorklistSave*
-:WorklistSave
-    Saves a worklist at |g:worklist_dir|/|g:worklist_file|
+:WorklistSave [file]
+    Saves a worklist at |g:worklist_dir|/|g:worklist_file|. If [filename] is
+    provided, it is stored as |g:worklist_file|.
 
 ------------------------------------------------------------------------------
                                                 *worklist-:WorklistShow*
 :WorklistShow
     Opens the quickfix window and shows the worklist. The height of the
-    quickfix window will be at most |worklist_quickfix_maxheight|, less if
+    quickfix window will be at most |g:worklist_qf_maxheight|, less if
     there are fewer worklist items.
 
 ------------------------------------------------------------------------------
@@ -99,24 +101,24 @@ COMMANDS                                        *worklist-commands*
 CONFIGURATION                                   *worklist-configuration*
 
 ------------------------------------------------------------------------------
-                                                *worklist_autoload*
-The worklist at |worklist_dir|/|worklist_file| can be automatically loaded upon
-entering vim. Set to `v:false` to disable this functionality.
+                                                *g:worklist_autoload*
+The worklist at |g:worklist_dir|/|g:worklist_file| can be automatically loaded
+upon entering vim. Set to `v:false` to disable this functionality.
 
     `let g:worklist_autoload = v:false`
 
 Default: `v:true`
 
 ------------------------------------------------------------------------------
-                                                *worklist_autosave*
-The worklist at |worklist_dir|/|worklist_file| can be automatically saved upon
-exiting vim. Set to `v:false` to disable this functionality.
+                                                *g:worklist_autosave*
+The worklist at |g:worklist_dir|/|g:worklist_file| can be automatically saved
+upon exiting vim. Set to `v:false` to disable this functionality.
 
     `let g:worklist_autosave = v:false`
 
 Default: `v:true`
 ------------------------------------------------------------------------------
-                                                *worklist_incomplete_text*
+                                                *g:worklist_incomplete_text*
 The text that is shown to indicate an incomplete item can be defined with
 `g:worklist_incomplete_text`:
 
@@ -125,7 +127,7 @@ The text that is shown to indicate an incomplete item can be defined with
 Default: `'[ ]'`
 
 ------------------------------------------------------------------------------
-                                                *worklist_complete_text*
+                                                *g:worklist_complete_text*
 The text that is shown to indicate a complete item can be defined with
 `g:worklist_complete_text`:
 
@@ -134,7 +136,7 @@ The text that is shown to indicate a complete item can be defined with
 Default: `'[X]'`
 
 ------------------------------------------------------------------------------
-                                                *worklist_dir*
+                                                *g:worklist_dir*
 The directory where a worklist file given by |worklist-file| will be saved can
 be defined with `g:worklist_dir`:
 
@@ -143,7 +145,7 @@ be defined with `g:worklist_dir`:
 Default: `$HOME .. '/.vim'`
 
 ------------------------------------------------------------------------------
-                                                *worklist_file*
+                                                *g:worklist_file*
 The name of the worklist file to use when saving/loading from |worklist-dir|
 can be defined with `g:worklist_file`:
 
@@ -152,7 +154,7 @@ can be defined with `g:worklist_file`:
 Default: `'.worklist.json'`
 
 ------------------------------------------------------------------------------
-                                                *worklist_popup_maxwidth*
+                                                *g:worklist_popup_maxwidth*
 
 Notes for worklist items are shown in a popup window above the cursor when
 browsing the worklist. The maximum width of this popup can be configured with
@@ -163,13 +165,13 @@ browsing the worklist. The maximum width of this popup can be configured with
 Default: 60
 
 ------------------------------------------------------------------------------
-                                                *worklist_quickfix_maxheight*
+                                                *g:worklist_qf_maxheight*
 
 The maximum height of the quickfix window when it is opened with
 |worklist-:WorklistShow| can be configured with
-`g:worklist_quickfix_maxheight`:
+`g:worklist_qf_maxheight`:
 
-    `let g:worklist_quickfix_maxheight = 80`
+    `let g:worklist_qf_maxheight = 80`
 
 Default: 10
 
