@@ -123,7 +123,7 @@ function! WorklistShowNotePopup(force=v:false)
             return
         endif
         let s:last_line = index
-        call popup_close(s:notewinid)
+        call WorklistCloseNotePopup()
 
         let item = s:worklist[index]
         if !empty(get(item, 'note', ''))
@@ -137,6 +137,11 @@ function! WorklistShowNotePopup(force=v:false)
             call setwinvar(s:notewinid, '&linebreak', 1)
         endif
     endif
+endfunction
+
+" Close the note popup
+function! WorklistCloseNotePopup():
+    call popup_close(s:notewinid)
 endfunction
 
 " Remove the current item from the worklist
@@ -241,6 +246,7 @@ function! WorklistStartPopupAutocmds()
         autocmd!
         autocmd CursorMoved <buffer> call WorklistShowNotePopup()
         autocmd BufEnter <buffer> call WorklistShowNotePopup(v:true)
+        autocmd BufLeave <buffer> call WorklistCloseNotePopup()
     augroup END
 endfunction
 
