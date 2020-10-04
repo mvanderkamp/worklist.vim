@@ -12,6 +12,7 @@ let g:worklist_complete_text = get(g:, 'worklist_complete_text', '[X]')
 let g:worklist_dir = get(g:, 'worklist_dir', $HOME .. '/.vim')
 let g:worklist_file = get(g:, 'worklist_file', '.worklist.json')
 let g:worklist_popup_maxwidth = get(g:, 'worklist_popup_maxwidth', 60)
+let g:worklist_quickfix_maxheight = get(g:, 'worklist_quickfix_maxheight', 10)
 
 " This is the list of quickfix items which defines the 'worklist'
 let s:worklist = []
@@ -61,7 +62,7 @@ endfunction
 " action: Passed as the action argument to setqflist
 function! WorklistShowQf(action=' ')
     call WorklistUpdate(a:action)
-    let l:height = min([10, len(s:worklist)])
+    let l:height = min([g:worklist_quickfix_maxheight, len(s:worklist)])
     if l:height > 0
         execute 'copen ' .. l:height
         call WorklistShowNotePopup(v:true)
