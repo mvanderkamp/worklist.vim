@@ -60,15 +60,12 @@ endfunction
 " Display the worklist in the quickfix window
 "
 " action: Passed as the action argument to setqflist
-function! WorklistShowQf(action=' ')
-    call WorklistUpdate(a:action)
-    let l:height = min([g:worklist_quickfix_maxheight, len(s:worklist)])
-    if l:height > 0
-        execute 'copen ' .. l:height
-        call WorklistShowNotePopup(v:true)
-    else
-        echohl Error | echo 'No worklist items' | echohl None
-    endif
+" idx: Passed as the idx entry to the {what} argument of setqflist
+function! WorklistShowQf(action=' ', idx=1)
+    call WorklistUpdate(a:action, a:idx)
+    let l:height = max(1, min([g:worklist_quickfix_maxheight, len(s:worklist)]))
+    execute 'copen ' .. l:height
+    call WorklistShowNotePopup(v:true)
 endfunction
 
 " Only update the worklist, don't force it to be visible
@@ -112,8 +109,7 @@ function! WorklistNote()
     let s:worklist[item].note = input('Set worklist note: ', get(s:worklist[item], 'note', ''))
     call inputrestore()
 
-    call WorklistUpdate('r', item + 1)
-    call WorklistShowNotePopup(v:true)
+    call WorklistShowQf('r', item + 1)
 endfunction
 
 " Show a popup with the note for the current worklist item
@@ -183,7 +179,7 @@ endfunction
 function! WorklistUpdateIfCurrent(idx=1)
     let qlist = getqflist({'title': 1})
     if qlist.title == 'worklist'
-        call WorklistUpdate('r', a:idx)
+        call WorklistShowQf('r', a:idx)
     endif
 endfunction
 
