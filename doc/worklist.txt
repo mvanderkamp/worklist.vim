@@ -8,25 +8,24 @@ License: Same terms as vim itself (see |license|)
 CONTENTS                                        *worklist* *worklist-contents*
 
     1. Introduction ........................... |worklist-introduction|
-    2. Installation ........................... |worklist-installation|
-    3. Commands ............................... |worklist-commands|
-        3.1 WorklistAdd ....................... |worklist-:WorklistAdd|
-        3.2 WorklistLoad ...................... |worklist-:WorklistLoad|
-        3.3 WorklistNote ...................... |worklist-:WorklistNote|
-        3.4 WorklistRemove .................... |worklist-:WorklistRemove|
-        3.5 WorklistSave ...................... |worklist-:WorklistSave|
-        3.6 WorklistShow ...................... |worklist-:WorklistShow|
-        3.7 WorklistSort ...................... |worklist-:WorklistSort|
-        3.8 WorklistToggle .................... |worklist-:WorklistToggle|
-    4. Configuration .......................... |worklist-configuration|
-        4.1 worklist_autoload ................. |worklist_autoload|
-        4.2 worklist_autosave ................. |worklist_autosave|
-        4.3 worklist_incomplete_text .......... |worklist_incomplete_text|
-        4.4 worklist_complete_text ............ |worklist_complete_text|
-        4.5 worklist_dir ...................... |worklist_dir|
-        4.6 worklist_file ..................... |worklist_file|
-        4.7 worklist_popup_maxwidth ........... |worklist_popup_maxwidth|
-        4.8 worklist_quickfix_maxheight ....... |worklist_quickfix_maxheight|
+    2. Commands ............................... |worklist-commands|
+        2.1 WorklistAdd ....................... |worklist-:WorklistAdd|
+        2.2 WorklistLoad ...................... |worklist-:WorklistLoad|
+        2.3 WorklistNote ...................... |worklist-:WorklistNote|
+        2.4 WorklistRemove .................... |worklist-:WorklistRemove|
+        2.5 WorklistSave ...................... |worklist-:WorklistSave|
+        2.6 WorklistShow ...................... |worklist-:WorklistShow|
+        2.7 WorklistSort ...................... |worklist-:WorklistSort|
+        2.8 WorklistToggle .................... |worklist-:WorklistToggle|
+    3. Configuration .......................... |worklist-configuration|
+        3.1 worklist_autoload ................. |worklist_autoload|
+        3.2 worklist_autosave ................. |worklist_autosave|
+        3.3 worklist_incomplete_text .......... |worklist_incomplete_text|
+        3.4 worklist_complete_text ............ |worklist_complete_text|
+        3.5 worklist_dir ...................... |worklist_dir|
+        3.6 worklist_file ..................... |worklist_file|
+        3.7 worklist_popup_maxwidth ........... |worklist_popup_maxwidth|
+        3.8 worklist_quickfix_maxheight ....... |worklist_quickfix_maxheight|
 
 
 ==============================================================================
@@ -40,17 +39,6 @@ until all items in the worklist have been handled. Let the line itself speak
 to the context of the item, or add a note to the item in the worklist.
 
 There are no mappings set up by default.
-
-
-==============================================================================
-INSTALLATION                                    *worklist-installation*
-
-Similar to any other vim plugin, use your preferred method. If you're new,
-check out:
-
-    packages:     |packages|
-    vim-pathogen: https://github.com/tpope/vim-pathogen#readme
-    vim-plug:     https://github.com/junegunn/vim-plug
 
 
 ==============================================================================
