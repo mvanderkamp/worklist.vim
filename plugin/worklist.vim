@@ -141,7 +141,7 @@ function! WorklistShowNotePopup(force=v:false)
 endfunction
 
 " Close the note popup
-function! WorklistCloseNotePopup():
+function! WorklistCloseNotePopup()
     call popup_close(s:notewinid)
 endfunction
 
