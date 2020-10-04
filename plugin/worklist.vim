@@ -20,7 +20,7 @@ let s:last_line = -1
 let s:notewinid = -1
 
 " Add the current file and line number as a worklist item
-function! WorklistAdd()
+function! WorklistAdd(note='')
     if &filetype == 'qf'
         echohl | echo 'Unabled to add quickfix entries to the worklist.' | echohl None
     endif
@@ -30,7 +30,7 @@ function! WorklistAdd()
                 \   'filename': curfile,
                 \   'lnum': lnum,
                 \   'col': col,
-                \   'note': '',
+                \   'note': a:note,
                 \   'text': trim(getline(lnum)),
                 \   'valid': v:true,
                 \ })
@@ -257,7 +257,7 @@ augroup worklist_window_autocmds
 augroup END
 
 " Define ex commands for the primary functions
-command! WorklistAdd call WorklistAdd()
+command! -nargs=? WorklistAdd call WorklistAdd("<args>")
 command! -nargs=? WorklistLoad call WorklistLoad("<args>")
 command! WorklistNote call WorklistNote()
 command! WorklistRemove call WorklistRemove()
