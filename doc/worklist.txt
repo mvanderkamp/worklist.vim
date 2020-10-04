@@ -46,15 +46,17 @@ COMMANDS                                        *worklist-commands*
 
 ------------------------------------------------------------------------------
                                                 *worklist-:WorklistAdd*
-:WorklistAdd
+:WorklistAdd [{note}]
     To be called from a source window, _not_ the worklist. Adds the current
-    source line under the cursor to the worklist.
+    source line under the cursor to the worklist. If a [{note}] is provided
+    then it is saved as note for the added worklist item, which will be shown
+    in a popup window when browsing the worklist.
 
 ------------------------------------------------------------------------------
                                                 *worklist-:WorklistLoad*
-:WorklistLoad [filename]
+:WorklistLoad [{filename}]
     Loads the worklist that is saved at |g:worklist_dir|/|g:worklist_file|.
-    If [filename] is provided, it is stored as |g:worklist_file|.
+    If [{filename}] is provided, it is stored as |g:worklist_file|.
 
 ------------------------------------------------------------------------------
                                                 *worklist-:WorklistNote*
@@ -72,8 +74,8 @@ COMMANDS                                        *worklist-commands*
 
 ------------------------------------------------------------------------------
                                                 *worklist-:WorklistSave*
-:WorklistSave [file]
-    Saves a worklist at |g:worklist_dir|/|g:worklist_file|. If [filename] is
+:WorklistSave [{filename}]
+    Saves a worklist at |g:worklist_dir|/|g:worklist_file|. If [{filename}] is
     provided, it is stored as |g:worklist_file|.
 
 ------------------------------------------------------------------------------
@@ -149,9 +151,9 @@ Default: `$HOME .. '/.vim'`
 The name of the worklist file to use when saving/loading from |worklist-dir|
 can be defined with `g:worklist_file`:
 
-    `let g:worklist_file = '.my-other-worklist.json'`
+    `let g:worklist_file = 'my-other-worklist.json'`
 
-Default: `'.worklist.json'`
+Default: `'worklist.json'`
 
 ------------------------------------------------------------------------------
                                                 *g:worklist_popup_maxwidth*
