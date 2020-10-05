@@ -19,7 +19,8 @@ let g:worklist_qf_maxheight = get(g:, 'worklist_qf_maxheight', 10)
 
 " This is the list of quickfix items which defines the 'worklist'
 let s:worklist = []
-let s:last_line = -1
+let s:worklist_id = -1
+let s:last_idx = -1
 let s:notewinid = -1
 
 " Add the current file and line number as a worklist item
@@ -129,10 +130,10 @@ endfunction
 function! s:WorklistShowNotePopup(force=v:false)
     if getqflist({'title': 1}).title == 'worklist'
         let index = line('.') - 1
-        if index == s:last_line && !a:force
+        if index == s:last_idx && !a:force
             return
         endif
-        let s:last_line = index
+        let s:last_idx = index
         call s:WorklistCloseNotePopup()
 
         let item = s:worklist[index]
