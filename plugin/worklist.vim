@@ -20,7 +20,7 @@ let g:worklist_qf_maxheight = get(g:, 'worklist_qf_maxheight', 10)
 " This is the list of quickfix items which defines the 'worklist'
 let s:worklist = []
 let s:worklist_id = -1
-let s:last_idx = -1
+let s:last_idx = 1
 let s:notewinid = -1
 
 " Add the current file and line number as a worklist item
@@ -38,7 +38,7 @@ function! s:WorklistAdd(note='')
                 \   'text': trim(getline(lnum)),
                 \   'valid': v:true,
                 \ })
-    call s:WorklistUpdateIfCurrent('$')
+    call s:WorklistUpdate('r', '$')
 endfunction
 
 " Used to provide the custom formatting for the worklist items
@@ -62,11 +62,8 @@ function! s:WorklistQfTextFunc(info)
 endfunction
 
 " Display the worklist in the quickfix window
-"
-" action: Passed as the action argument to setqflist
-" idx: Passed as the idx entry to the {what} argument of setqflist
-function! s:WorklistShowQf(action=' ', idx=1)
-    call s:WorklistUpdate(a:action, a:idx)
+function! s:WorklistShowQf()
+    call s:WorklistUpdate(' ')
     let l:height = min([g:worklist_qf_maxheight, len(s:worklist)])
     if l:height > 0
         execute 'copen ' .. l:height
@@ -77,14 +74,32 @@ function! s:WorklistShowQf(action=' ', idx=1)
 endfunction
 
 " Only update the worklist, don't force it to be visible
-function! s:WorklistUpdate(action=' ', idx=1)
-    call setqflist([], a:action, {
-                \   'title': 'worklist',
-                \   'context': 'worklist',
-                \   'items': s:worklist,
-                \   'idx': a:idx,
-                \   'quickfixtextfunc': '<SID>WorklistQfTextFunc',
-                \ })
+function! s:WorklistUpdate(action='r', idx=s:last_idx)
+    if s:worklist_id == -1
+        " The worklist has not yet been loaded into a quickfix list, need to
+        " do so. The ' ' action accomplishes this.
+        let l:action = ' '
+    else
+        " The worklist exists in a quickfix list, so 'r' and 'a' actions are
+        " acceptable, as well as the ' ' action.
+        let l:action = a:action
+    endif
+
+    let what = {
+        \   'title': 'worklist',
+        \   'context': 'worklist',
+        \   'items': s:worklist,
+        \   'idx': a:idx,
+        \   'quickfixtextfunc': function('<SID>WorklistQfTextFunc'),
+        \ }
+
+    if action == ' '
+        call setqflist([], l:action, what)
+        let s:worklist_id = getqflist({'id': 0}).id
+    else
+        let what.id = s:worklist_id
+        call setqflist([], l:action, what)
+    endif
 endfunction
 
 " Toggle whether the current item in the worklist is 'completed'
@@ -124,7 +139,8 @@ function! s:WorklistNote(note='')
         let s:worklist[index].note = a:note
     endif
 
-    call s:WorklistShowQf('r', index + 1)
+    call s:WorklistUpdate('r', index + 1)
+    call s:WorklistShowNotePopup(v:true)
 endfunction
 
 " Show a popup with the note for the current worklist item
@@ -187,15 +203,7 @@ endfunction
 " Sort the worklist according to file name then line number
 function! s:WorklistSort()
     call sort(s:worklist, 'WorklistSort_cmpfunc')
-    call s:WorklistUpdateIfCurrent()
-endfunction
-
-" If the worklist is the current quickfix list, update it.
-function! s:WorklistUpdateIfCurrent(idx=1)
-    let qlist = getqflist({'title': 1})
-    if qlist.title == 'worklist'
-        call s:WorklistUpdate('r', a:idx)
-    endif
+    call s:WorklistUpdate('r', 1)
 endfunction
 
 " Get the full worklist file path
@@ -235,7 +243,7 @@ function! s:WorklistLoad(filename=g:worklist_file)
         echohl Error | echo 'No worklist file has been saved yet, unable to load.' | echohl None
         let s:worklist = []
     endif
-    call s:WorklistUpdateIfCurrent()
+    call s:WorklistUpdate(' ', 1)
 endfunction
 
 " autoload
