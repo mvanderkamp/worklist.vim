@@ -96,9 +96,9 @@ function! s:WorklistToggle()
         echohl Error | echo 'The current quickfix window is not the worklist!' | echohl None
         return
     endif
-    let item = line('.') - 1
-    let s:worklist[item].valid = !s:worklist[item].valid
-    call s:WorklistUpdate('r', item + 1)
+    let index = line('.') - 1
+    let s:worklist[index].valid = !s:worklist[index].valid
+    call s:WorklistUpdate('r', index + 1)
 endfunction
 
 " Add a note to this worklist item
@@ -113,17 +113,18 @@ function! s:WorklistNote(note='')
         return
     endif
 
-    let item = line('.') - 1
+    let index = line('.') - 1
 
     if empty(a:note)
         call inputsave()
-        let s:worklist[item].note = input('Set worklist note: ', get(s:worklist[item], 'note', ''))
+        let s:worklist[index].note = input('Set worklist note: ',
+                    \ get(s:worklist[index], 'note', ''))
         call inputrestore()
     else
-        let s:worklist[item].note = a:note
+        let s:worklist[index].note = a:note
     endif
 
-    call s:WorklistShowQf('r', item + 1)
+    call s:WorklistShowQf('r', index + 1)
 endfunction
 
 " Show a popup with the note for the current worklist item
@@ -164,9 +165,9 @@ function! s:WorklistRemove()
         echohl Error | echo 'The current quickfix window is not the worklist!' | echohl None
         return
     endif
-    let item = line('.') - 1
-    call remove(s:worklist, item)
-    call s:WorklistUpdate('r', item)
+    let index = line('.') - 1
+    call remove(s:worklist, index)
+    call s:WorklistUpdate('r', index)
 endfunction
 
 " Compares two worklist items. Used for sorting.
