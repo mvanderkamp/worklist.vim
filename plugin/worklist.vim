@@ -93,7 +93,7 @@ function! WorklistToggle()
     call WorklistUpdate('r', item + 1)
 endfunction
 
-" Show a note for this line instead of the code
+" Add a note to this worklist item
 function! WorklistNote()
     if &filetype != 'qf'
         echohl Error | echo 'Can only add notes to worklist items in the quickfix window!' | echohl None
