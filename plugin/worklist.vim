@@ -202,7 +202,7 @@ endfunction
 
 " Sort the worklist according to file name then line number
 function! s:WorklistSort()
-    call sort(s:worklist, 'WorklistSort_cmpfunc')
+    call sort(s:worklist, '<SID>WorklistSort_cmpfunc')
     call s:WorklistUpdate('r', 1)
 endfunction
 
