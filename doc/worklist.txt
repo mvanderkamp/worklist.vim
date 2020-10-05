@@ -48,23 +48,23 @@ COMMANDS                                        *worklist-commands*
                                                 *worklist-:WorklistAdd*
 :WorklistAdd [{note}]
     To be called from a source window, _not_ the worklist. Adds the current
-    source line under the cursor to the worklist. If a [{note}] is provided
-    then it is saved as note for the added worklist item, which will be shown
-    in a popup window when browsing the worklist.
+    source line under the cursor to the worklist. If a {note} is provided then
+    it is saved as note for the added worklist item, which will be shown in a
+    popup window when browsing the worklist.
 
 ------------------------------------------------------------------------------
                                                 *worklist-:WorklistLoad*
 :WorklistLoad [{filename}]
     Loads the worklist that is saved at |g:worklist_dir|/|g:worklist_file|.
-    If [{filename}] is provided, it is stored as |g:worklist_file|.
+    If {filename} is provided, it is stored as |g:worklist_file|.
 
 ------------------------------------------------------------------------------
                                                 *worklist-:WorklistNote*
-:WorklistNote
+:WorklistNote [{note}]
     To be called while in the quickfix window and it is showing the worklist.
-    Opens a prompt which lets you add a note to clarify the current worklist
-    item. Notes for the current item will be shown in a popup window when in
-    the worklist.
+    Lets you add a note to clarify the current worklist item. Notes for the
+    current item will be shown in a popup window when in the worklist. If no
+    {note} is provided, opens a prompt for one.
 
 ------------------------------------------------------------------------------
                                                 *worklist-:WorklistRemove*
@@ -75,7 +75,7 @@ COMMANDS                                        *worklist-commands*
 ------------------------------------------------------------------------------
                                                 *worklist-:WorklistSave*
 :WorklistSave [{filename}]
-    Saves a worklist at |g:worklist_dir|/|g:worklist_file|. If [{filename}] is
+    Saves a worklist at |g:worklist_dir|/|g:worklist_file|. If {filename} is
     provided, it is stored as |g:worklist_file|.
 
 ------------------------------------------------------------------------------
