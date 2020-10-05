@@ -139,8 +139,8 @@ Default: `'[X]'`
 
 ------------------------------------------------------------------------------
                                                 *g:worklist_dir*
-The directory where a worklist file given by |worklist-file| will be saved can
-be defined with `g:worklist_dir`:
+The directory where a worklist file given by |g:worklist_file| will be saved
+can be defined with `g:worklist_dir`:
 
     `let g:worklist_dir = $HOME .. '/.config/vim'`
 
@@ -148,7 +148,7 @@ Default: `$HOME .. '/.vim'`
 
 ------------------------------------------------------------------------------
                                                 *g:worklist_file*
-The name of the worklist file to use when saving/loading from |worklist-dir|
+The name of the worklist file to use when saving/loading from |g:worklist_dir|
 can be defined with `g:worklist_file`:
 
     `let g:worklist_file = 'my-other-worklist.json'`
