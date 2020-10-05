@@ -94,7 +94,9 @@ function! WorklistToggle()
 endfunction
 
 " Add a note to this worklist item
-function! WorklistNote()
+"
+" note: note to save for the current worklist item. If empty, prompt for one.
+function! WorklistNote(note='')
     if &filetype != 'qf'
         echohl Error | echo 'Can only add notes to worklist items in the quickfix window!' | echohl None
         return
@@ -105,9 +107,13 @@ function! WorklistNote()
 
     let item = line('.') - 1
 
-    call inputsave()
-    let s:worklist[item].note = input('Set worklist note: ', get(s:worklist[item], 'note', ''))
-    call inputrestore()
+    if empty(a:note)
+        call inputsave()
+        let s:worklist[item].note = input('Set worklist note: ', get(s:worklist[item], 'note', ''))
+        call inputrestore()
+    else
+        let s:worklist[item].note = a:note
+    endif
 
     call WorklistShowQf('r', item + 1)
 endfunction
@@ -253,9 +259,9 @@ augroup worklist_window_autocmds
 augroup END
 
 " Define ex commands for the primary functions
-command! -nargs=? WorklistAdd call WorklistAdd("<args>")
+command! -nargs=* WorklistAdd call WorklistAdd("<args>")
 command! -nargs=? WorklistLoad call WorklistLoad("<args>")
-command! WorklistNote call WorklistNote()
+command! -nargs=* WorklistNote call WorklistNote("<args>")
 command! WorklistRemove call WorklistRemove()
 command! -nargs=? WorklistSave call WorklistSave("<args>")
 command! WorklistSort call WorklistSort()
