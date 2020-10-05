@@ -66,9 +66,13 @@ endfunction
 " idx: Passed as the idx entry to the {what} argument of setqflist
 function! s:WorklistShowQf(action=' ', idx=1)
     call s:WorklistUpdate(a:action, a:idx)
-    let l:height = max(1, min([g:worklist_qf_maxheight, len(s:worklist)]))
-    execute 'copen ' .. l:height
-    call s:WorklistShowNotePopup(v:true)
+    let l:height = min([g:worklist_qf_maxheight, len(s:worklist)])
+    if l:height > 0
+        execute 'copen ' .. l:height
+        call s:WorklistShowNotePopup(v:true)
+    else
+        echohl Error | echo 'Worklist is empty' | echohl None
+    endif
 endfunction
 
 " Only update the worklist, don't force it to be visible
