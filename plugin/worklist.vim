@@ -23,7 +23,7 @@ let s:last_line = -1
 let s:notewinid = -1
 
 " Add the current file and line number as a worklist item
-function! WorklistAdd(note='')
+function! s:WorklistAdd(note='')
     if &filetype == 'qf'
         echohl | echo 'Unabled to add quickfix entries to the worklist.' | echohl None
     endif
@@ -37,11 +37,11 @@ function! WorklistAdd(note='')
                 \   'text': trim(getline(lnum)),
                 \   'valid': v:true,
                 \ })
-    call WorklistUpdateIfCurrent('$')
+    call s:WorklistUpdateIfCurrent('$')
 endfunction
 
 " Used to provide the custom formatting for the worklist items
-function! WorklistQfTextFunc(info)
+function! s:WorklistQfTextFunc(info)
     let lines = []
     for idx in range(a:info.start_idx - 1, a:info.end_idx - 1)
         let item = s:worklist[idx]
@@ -64,26 +64,26 @@ endfunction
 "
 " action: Passed as the action argument to setqflist
 " idx: Passed as the idx entry to the {what} argument of setqflist
-function! WorklistShowQf(action=' ', idx=1)
-    call WorklistUpdate(a:action, a:idx)
+function! s:WorklistShowQf(action=' ', idx=1)
+    call s:WorklistUpdate(a:action, a:idx)
     let l:height = max(1, min([g:worklist_qf_maxheight, len(s:worklist)]))
     execute 'copen ' .. l:height
-    call WorklistShowNotePopup(v:true)
+    call s:WorklistShowNotePopup(v:true)
 endfunction
 
 " Only update the worklist, don't force it to be visible
-function! WorklistUpdate(action=' ', idx=1)
+function! s:WorklistUpdate(action=' ', idx=1)
     call setqflist([], a:action, {
                 \   'title': 'worklist',
                 \   'context': 'worklist',
                 \   'items': s:worklist,
                 \   'idx': a:idx,
-                \   'quickfixtextfunc': 'WorklistQfTextFunc',
+                \   'quickfixtextfunc': '<SID>WorklistQfTextFunc',
                 \ })
 endfunction
 
 " Toggle whether the current item in the worklist is 'completed'
-function! WorklistToggle()
+function! s:WorklistToggle()
     if &filetype != 'qf'
         echohl Error | echo 'Can only complete worklist items in the quickfix window!' | echohl None
         return
@@ -93,13 +93,13 @@ function! WorklistToggle()
     endif
     let item = line('.') - 1
     let s:worklist[item].valid = !s:worklist[item].valid
-    call WorklistUpdate('r', item + 1)
+    call s:WorklistUpdate('r', item + 1)
 endfunction
 
 " Add a note to this worklist item
 "
 " note: note to save for the current worklist item. If empty, prompt for one.
-function! WorklistNote(note='')
+function! s:WorklistNote(note='')
     if &filetype != 'qf'
         echohl Error | echo 'Can only add notes to worklist items in the quickfix window!' | echohl None
         return
@@ -118,18 +118,18 @@ function! WorklistNote(note='')
         let s:worklist[item].note = a:note
     endif
 
-    call WorklistShowQf('r', item + 1)
+    call s:WorklistShowQf('r', item + 1)
 endfunction
 
 " Show a popup with the note for the current worklist item
-function! WorklistShowNotePopup(force=v:false)
+function! s:WorklistShowNotePopup(force=v:false)
     if getqflist({'title': 1}).title == 'worklist'
         let index = line('.') - 1
         if index == s:last_line && !a:force
             return
         endif
         let s:last_line = index
-        call WorklistCloseNotePopup()
+        call s:WorklistCloseNotePopup()
 
         let item = s:worklist[index]
         if !empty(get(item, 'note', ''))
@@ -146,12 +146,12 @@ function! WorklistShowNotePopup(force=v:false)
 endfunction
 
 " Close the note popup
-function! WorklistCloseNotePopup()
+function! s:WorklistCloseNotePopup()
     call popup_close(s:notewinid)
 endfunction
 
 " Remove the current item from the worklist
-function! WorklistRemove()
+function! s:WorklistRemove()
     if &filetype != 'qf'
         echohl Error | echo 'Can only remove worklist items in the quickfix window!' | echohl None
         return
@@ -161,11 +161,11 @@ function! WorklistRemove()
     endif
     let item = line('.') - 1
     call remove(s:worklist, item)
-    call WorklistUpdate('r', item)
+    call s:WorklistUpdate('r', item)
 endfunction
 
 " Compares two worklist items. Used for sorting.
-function! WorklistSort_cmpfunc(left, right)
+function! s:WorklistSort_cmpfunc(left, right)
     let lname = fnamemodify(a:left.filename, ':p:.')
     let rname = fnamemodify(a:right.filename, ':p:.')
     if lname < rname
@@ -179,53 +179,53 @@ function! WorklistSort_cmpfunc(left, right)
 endfunction
 
 " Sort the worklist according to file name then line number
-function! WorklistSort()
+function! s:WorklistSort()
     call sort(s:worklist, 'WorklistSort_cmpfunc')
-    call WorklistUpdateIfCurrent()
+    call s:WorklistUpdateIfCurrent()
 endfunction
 
 " If the worklist is the current quickfix list, update it.
-function! WorklistUpdateIfCurrent(idx=1)
+function! s:WorklistUpdateIfCurrent(idx=1)
     let qlist = getqflist({'title': 1})
     if qlist.title == 'worklist'
-        call WorklistShowQf('r', a:idx)
+        call s:WorklistUpdate('r', a:idx)
     endif
 endfunction
 
 " Get the full worklist file path
-function! WorklistFile(filename)
+function! s:WorklistFile(filename)
     return g:worklist_dir .. '/' .. a:filename
 endfunction
 
 " Save the worklist
-function! WorklistSave(filename=g:worklist_file)
+function! s:WorklistSave(filename=g:worklist_file)
     if empty(a:filename)
         let l:filename = g:worklist_file
     else
         let l:filename = a:filename
     endif
     let g:worklist_file = l:filename
-    let dest = WorklistFile(l:filename)
+    let dest = s:WorklistFile(l:filename)
     let data = json_encode(s:worklist)
     call writefile([data], dest)
 endfunction
 
 " Load the worklist
-function! WorklistLoad(filename=g:worklist_file)
+function! s:WorklistLoad(filename=g:worklist_file)
     if empty(a:filename)
         let l:filename = g:worklist_file
     else
         let l:filename = a:filename
     endif
     let g:worklist_file
-    let dest = WorklistFile(l:filename)
+    let dest = s:WorklistFile(l:filename)
     if filereadable(dest)
         let data = json_decode(readfile(dest)[0])
         let s:worklist = data
     else
         echohl Error | echo 'No worklist file has been saved yet, unable to load.' | echohl None
     endif
-    call WorklistUpdateIfCurrent()
+    call s:WorklistUpdateIfCurrent()
 endfunction
 
 " autoload
@@ -240,33 +240,33 @@ endif
 if g:worklist_autosave
     augroup worklist_autosave_autocmds
         autocmd!
-        autocmd VimLeave * call WorklistSave()
+        autocmd VimLeave * call s:WorklistSave()
     augroup END
 endif
 
-function! WorklistStartPopupAutocmds()
+function! s:WorklistStartPopupAutocmds()
     if &filetype != 'qf'
         return
     endif
     augroup worklist_popup_autocmds
         autocmd!
-        autocmd CursorMoved <buffer> call WorklistShowNotePopup()
-        autocmd BufEnter <buffer> call WorklistShowNotePopup(v:true)
-        autocmd BufLeave <buffer> call WorklistCloseNotePopup()
+        autocmd CursorMoved <buffer> call s:WorklistShowNotePopup()
+        autocmd BufEnter <buffer> call s:WorklistShowNotePopup(v:true)
+        autocmd BufLeave <buffer> call s:WorklistCloseNotePopup()
     augroup END
 endfunction
 
 augroup worklist_window_autocmds
     autocmd!
-    autocmd FileType qf call WorklistStartPopupAutocmds()
+    autocmd FileType qf call s:WorklistStartPopupAutocmds()
 augroup END
 
 " Define ex commands for the primary functions
-command! -nargs=* WorklistAdd call WorklistAdd("<args>")
-command! -nargs=? WorklistLoad call WorklistLoad("<args>")
-command! -nargs=* WorklistNote call WorklistNote("<args>")
-command! WorklistRemove call WorklistRemove()
-command! -nargs=? WorklistSave call WorklistSave("<args>")
-command! WorklistSort call WorklistSort()
-command! WorklistToggle call WorklistToggle()
-command! WorklistShow call WorklistShowQf()
+command! -nargs=* WorklistAdd call <SID>WorklistAdd("<args>")
+command! -nargs=? WorklistLoad call <SID>WorklistLoad("<args>")
+command! -nargs=* WorklistNote call <SID>WorklistNote("<args>")
+command! WorklistRemove call <SID>WorklistRemove()
+command! -nargs=? WorklistSave call <SID>WorklistSave("<args>")
+command! WorklistSort call <SID>WorklistSort()
+command! WorklistToggle call <SID>WorklistToggle()
+command! WorklistShow call <SID>WorklistShowQf()
