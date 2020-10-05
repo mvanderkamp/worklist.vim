@@ -216,6 +216,9 @@ endfunction
 
 " Load the worklist
 function! s:WorklistLoad(filename=g:worklist_file)
+    if g:worklist_autosave
+        call s:WorklistSave()
+    endif
     if empty(a:filename)
         let l:filename = g:worklist_file
     else
