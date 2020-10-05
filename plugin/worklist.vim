@@ -224,7 +224,7 @@ function! s:WorklistLoad(filename=g:worklist_file)
     else
         let l:filename = a:filename
     endif
-    let g:worklist_file
+    let g:worklist_file = l:filename
     let dest = s:WorklistFile(l:filename)
     if filereadable(dest)
         let data = json_decode(readfile(dest)[0])
