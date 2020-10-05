@@ -231,6 +231,7 @@ function! s:WorklistLoad(filename=g:worklist_file)
         let s:worklist = data
     else
         echohl Error | echo 'No worklist file has been saved yet, unable to load.' | echohl None
+        let s:worklist = []
     endif
     call s:WorklistUpdateIfCurrent()
 endfunction
@@ -239,7 +240,7 @@ endfunction
 if g:worklist_autoload
     augroup worklist_autoload_autocmds
         autocmd!
-        autocmd VimEnter * call WorklistLoad(v:true)
+        autocmd VimEnter * call s:WorklistLoad()
     augroup END
 endif
 
