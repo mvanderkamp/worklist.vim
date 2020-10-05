@@ -1,8 +1,11 @@
+" Vim global plugin that provides a quickfix todo list based on source lines.
+" Maintainer: Michael van der Kamp
+" License: Same as vim
 
-if exists('did_worklist_vim') || &cp || version < 800
+if exists('g:loaded_worklist') || &cp || version < 800
     finish
 endif
-let did_worklist_vim = 1
+let g:loaded_worklist = 1
 
 " Prepare options
 let g:worklist_autoload = get(g:, 'worklist_autoload', v:true)
