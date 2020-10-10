@@ -21,3 +21,10 @@ check out:
 
 See `doc/worklist.txt` (or `:help worklist` from vim after installing) for
 commands and configuration.
+
+## Demo
+
+Here's an asciicast which briefly demos some of the functionality provided by
+this plugin:
+
+[![asciicast](https://asciinema.org/a/Z0iu59cdsqpTmGOGGtIoeluJa.svg)](https://asciinema.org/a/Z0iu59cdsqpTmGOGGtIoeluJa)
