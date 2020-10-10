@@ -263,7 +263,7 @@ if g:worklist_autosave
 endif
 
 function! s:WorklistStartPopupAutocmds()
-    if &filetype != 'qf'
+    if getqflist({'winid': 0}).winid != win_getid()
         return
     endif
     augroup worklist_popup_autocmds
