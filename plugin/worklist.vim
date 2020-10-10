@@ -111,7 +111,12 @@ function! s:WorklistToggle()
         echohl Error | echo 'The current quickfix window is not the worklist!' | echohl None
         return
     endif
+
     let index = line('.') - 1
+    if index >= len(s:worklist)
+        return
+    endif
+
     let s:worklist[index].valid = !s:worklist[index].valid
     call s:WorklistUpdate('r', index + 1)
 endfunction
@@ -129,6 +134,9 @@ function! s:WorklistNote(note='')
     endif
 
     let index = line('.') - 1
+    if index >= len(s:worklist)
+        return
+    endif
 
     if empty(a:note)
         call inputsave()
@@ -147,7 +155,7 @@ endfunction
 function! s:WorklistShowNotePopup(force=v:false)
     if getqflist({'title': 1}).title == 'worklist'
         let index = line('.') - 1
-        if index == s:last_idx && !a:force
+        if index >= len(s:worklist) || (index == s:last_idx && !a:force)
             return
         endif
         let s:last_idx = index
@@ -181,7 +189,12 @@ function! s:WorklistRemove()
         echohl Error | echo 'The current quickfix window is not the worklist!' | echohl None
         return
     endif
+
     let index = line('.') - 1
+    if index >= len(s:worklist)
+        return
+    endif
+
     call remove(s:worklist, index)
     call s:WorklistUpdate('r', index)
 endfunction
