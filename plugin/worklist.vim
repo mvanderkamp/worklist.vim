@@ -140,8 +140,10 @@ function! s:WorklistNote(note='')
 
     if empty(a:note)
         call inputsave()
+        echohl Question
         let s:worklist[index].note = input('Set worklist note: ',
                     \ get(s:worklist[index], 'note', ''))
+        echohl None
         call inputrestore()
     else
         let s:worklist[index].note = a:note
