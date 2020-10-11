@@ -20,22 +20,22 @@ check out:
 
 ## Features
 
-- Easily add/remove lines to the list using `WorklistAdd` and `WorklistRemove`.
+- Easily add/remove lines to the list using `:WorklistAdd` and `:WorklistRemove`.
   No need to enter a TODO comment or switch to another file.
-- Mark entries as "completed" using `WorklistToggle` and they will be skipped
+- Mark entries as "completed" using `:WorklistToggle` and they will be skipped
   by the `:cn` and `:cp` family of commands.
     - Allows you to easily keep a record of what you've done and what's still
       left to do.
-- Add a note to an entry using `WorklistNote` and it will be shown in a popup
+- Add a note to an entry using `:WorklistNote` and it will be shown in a popup
   when browsing the list in the quickfix window.
 - Easily add the worklist after your current position in the quickfix stack and
-  show it using `WorklistShow`.
+  show it using `:WorklistShow`.
 - The worklist will be updated even if it isn't the current quickfix list being
   shown, allowing you to move on to other quickfix lists then use the
   `:chistory`, `:cnewer`, and `:colder` family of commands to jump back to the
   worklist.
-    - Alternatively, can just use `WorklistShow` again.
-- Save and load your worklist using `WorklistSave` and `WorklistLoad`.
+    - Alternatively, can just use `:WorklistShow` again.
+- Save and load your worklist using `:WorklistSave` and `:WorklistLoad`.
     - Easily keep a different worklist e.g. for each git branch.
 
 ## Usage
