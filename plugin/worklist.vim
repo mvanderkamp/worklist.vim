@@ -241,13 +241,13 @@ endfunction
 
 " Load the worklist
 function! s:WorklistLoad(filename=g:worklist_file)
-    if g:worklist_autosave
-        call s:WorklistSave()
-    endif
     if empty(a:filename)
         let l:filename = g:worklist_file
     else
         let l:filename = a:filename
+    endif
+    if g:worklist_autosave && g:worklist_file != l:filename
+        call s:WorklistSave()
     endif
     let g:worklist_file = l:filename
     let dest = s:WorklistFile(l:filename)
