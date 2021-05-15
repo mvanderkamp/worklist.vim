@@ -26,10 +26,21 @@ let s:worklist_id = -1
 let s:last_idx = 1
 let s:notewinid = -1
 
+
+function! s:InQuickfix() abort
+    return &filetype ==? 'qf'
+endfunction
+
+
+function! s:WorklistIsCurrentQuickfix() abort
+    return getqflist({'title': 1}).title ==# 'worklist'
+endfunction
+
+
 " Add the current file and line number as a worklist item
 function! s:WorklistAdd(note='') abort
-    if &filetype == 'qf'
-        echohl | echo 'Unabled to add quickfix entries to the worklist.' | echohl None
+    if s:InQuickfix()
+        echohl | echo 'Unable to add quickfix entries to the worklist.' | echohl None
     endif
     let [bufnum, lnum, col, off, curswant] = getcurpos()
     let curfile = expand('%:p')
@@ -111,10 +122,10 @@ endfunction
 
 " Toggle whether the current item in the worklist is 'completed'
 function! s:WorklistToggle() abort
-    if &filetype != 'qf'
+    if !s:InQuickfix()
         echohl Error | echo 'Can only complete worklist items in the quickfix window!' | echohl None
         return
-    elseif getqflist({'title': 1}).title != 'worklist'
+    elseif !s:WorklistIsCurrentQuickfix()
         echohl Error | echo 'The current quickfix window is not the worklist!' | echohl None
         return
     endif
@@ -133,10 +144,10 @@ endfunction
 "
 " note: note to save for the current worklist item. If empty, prompt for one.
 function! s:WorklistNote(note='') abort
-    if &filetype != 'qf'
+    if !s:InQuickfix()
         echohl Error | echo 'Can only add notes to worklist items in the quickfix window!' | echohl None
         return
-    elseif getqflist({'title': 1}).title != 'worklist'
+    elseif !s:WorklistIsCurrentQuickfix()
         echohl Error | echo 'The current quickfix window is not the worklist!' | echohl None
         return
     endif
@@ -164,7 +175,7 @@ endfunction
 
 " Show a popup with the note for the current worklist item
 function! s:WorklistShowNotePopup(force=v:false) abort
-    if getqflist({'title': 1}).title == 'worklist'
+    if s:WorklistIsCurrentQuickfix()
         let index = line('.') - 1
         if index >= len(s:worklist) || (index == s:last_idx && !a:force)
             return
@@ -195,10 +206,10 @@ endfunction
 
 " Remove the current item from the worklist
 function! s:WorklistRemove() abort
-    if &filetype != 'qf'
+    if !s:InQuickfix()
         echohl Error | echo 'Can only remove worklist items in the quickfix window!' | echohl None
         return
-    elseif getqflist({'title': 1}).title != 'worklist'
+    elseif !s:WorklistIsCurrentQuickfix()
         echohl Error | echo 'The current quickfix window is not the worklist!' | echohl None
         return
     endif
