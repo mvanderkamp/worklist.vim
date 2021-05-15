@@ -27,7 +27,7 @@ let s:last_idx = 1
 let s:notewinid = -1
 
 " Add the current file and line number as a worklist item
-function! s:WorklistAdd(note='')
+function! s:WorklistAdd(note='') abort
     if &filetype == 'qf'
         echohl | echo 'Unabled to add quickfix entries to the worklist.' | echohl None
     endif
@@ -46,7 +46,7 @@ endfunction
 
 
 " Used to provide the custom formatting for the worklist items
-function! s:WorklistQfTextFunc(info)
+function! s:WorklistQfTextFunc(info) abort
     let lines = []
     for idx in range(a:info.start_idx - 1, a:info.end_idx - 1)
         let item = s:worklist[idx]
@@ -67,7 +67,7 @@ endfunction
 
 
 " Display the worklist in the quickfix window
-function! s:WorklistShowQf()
+function! s:WorklistShowQf() abort
     call s:WorklistUpdate(' ')
     let l:height = min([g:worklist_qf_maxheight, len(s:worklist)])
     if l:height > 0
@@ -80,7 +80,7 @@ endfunction
 
 
 " Only update the worklist, don't force it to be visible
-function! s:WorklistUpdate(action='r', idx=s:last_idx)
+function! s:WorklistUpdate(action='r', idx=s:last_idx) abort
     if s:worklist_id == -1
         " The worklist has not yet been loaded into a quickfix list, need to
         " do so. The ' ' action accomplishes this.
@@ -110,7 +110,7 @@ endfunction
 
 
 " Toggle whether the current item in the worklist is 'completed'
-function! s:WorklistToggle()
+function! s:WorklistToggle() abort
     if &filetype != 'qf'
         echohl Error | echo 'Can only complete worklist items in the quickfix window!' | echohl None
         return
@@ -132,7 +132,7 @@ endfunction
 " Add a note to this worklist item
 "
 " note: note to save for the current worklist item. If empty, prompt for one.
-function! s:WorklistNote(note='')
+function! s:WorklistNote(note='') abort
     if &filetype != 'qf'
         echohl Error | echo 'Can only add notes to worklist items in the quickfix window!' | echohl None
         return
@@ -163,7 +163,7 @@ endfunction
 
 
 " Show a popup with the note for the current worklist item
-function! s:WorklistShowNotePopup(force=v:false)
+function! s:WorklistShowNotePopup(force=v:false) abort
     if getqflist({'title': 1}).title == 'worklist'
         let index = line('.') - 1
         if index >= len(s:worklist) || (index == s:last_idx && !a:force)
@@ -188,13 +188,13 @@ endfunction
 
 
 " Close the note popup
-function! s:WorklistCloseNotePopup()
+function! s:WorklistCloseNotePopup() abort
     call popup_close(s:notewinid)
 endfunction
 
 
 " Remove the current item from the worklist
-function! s:WorklistRemove()
+function! s:WorklistRemove() abort
     if &filetype != 'qf'
         echohl Error | echo 'Can only remove worklist items in the quickfix window!' | echohl None
         return
@@ -214,7 +214,7 @@ endfunction
 
 
 " Compares two worklist items. Used for sorting.
-function! s:WorklistSort_cmpfunc(left, right)
+function! s:WorklistSort_cmpfunc(left, right) abort
     let lname = fnamemodify(a:left.filename, ':p:.')
     let rname = fnamemodify(a:right.filename, ':p:.')
     if lname < rname
@@ -229,20 +229,20 @@ endfunction
 
 
 " Sort the worklist according to file name then line number
-function! s:WorklistSort()
+function! s:WorklistSort() abort
     call sort(s:worklist, '<SID>WorklistSort_cmpfunc')
     call s:WorklistUpdate('r', 1)
 endfunction
 
 
 " Get the full worklist file path
-function! s:WorklistFile(filename)
+function! s:WorklistFile(filename) abort
     return g:worklist_dir .. '/' .. a:filename
 endfunction
 
 
 " Save the worklist
-function! s:WorklistSave(filename=g:worklist_file)
+function! s:WorklistSave(filename=g:worklist_file) abort
     if empty(a:filename)
         let l:filename = g:worklist_file
     else
@@ -256,7 +256,7 @@ endfunction
 
 
 " Load the worklist
-function! s:WorklistLoad(filename=g:worklist_file)
+function! s:WorklistLoad(filename=g:worklist_file) abort
     if empty(a:filename)
         let l:filename = g:worklist_file
     else
@@ -296,7 +296,7 @@ if g:worklist_autosave
 endif
 
 
-function! s:WorklistStartPopupAutocmds()
+function! s:WorklistStartPopupAutocmds() abort
     if getqflist({'winid': 0}).winid != win_getid()
         return
     endif
