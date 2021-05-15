@@ -33,7 +33,7 @@ endfunction
 
 
 function! s:IsCurrentQuickfix() abort
-    return getqflist({'title': 1}).title ==# 'worklist'
+    return stridx(getqflist({'title': 1}).title, 'worklist') == 0
 endfunction
 
 
@@ -93,6 +93,8 @@ endfunction
 
 " Only update the worklist, don't force it to be visible
 function! s:Update(action='r', idx=s:last_idx) abort
+    let title = 'worklist: ' .. s:File(g:worklist_file)
+
     if s:worklist_id == -1
         " The worklist has not yet been loaded into a quickfix list, need to
         " do so. The ' ' action accomplishes this.
@@ -104,8 +106,8 @@ function! s:Update(action='r', idx=s:last_idx) abort
     endif
 
     let what = {
-        \   'title': 'worklist',
-        \   'context': 'worklist',
+        \   'title': title,
+        \   'context': title,
         \   'items': s:worklist,
         \   'idx': a:idx,
         \   'quickfixtextfunc': function('<SID>QfTextFunc'),
