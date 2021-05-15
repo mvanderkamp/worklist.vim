@@ -40,7 +40,8 @@ endfunction
 " Add the current file and line number as a worklist item
 function! s:Add(note='') abort
     if s:InQuickfix()
-        echohl | echo 'Unable to add quickfix entries to the worklist.' | echohl None
+        echohl Error | echo 'Unable to add quickfix entries to the worklist.' | echohl None
+        return
     endif
     let [bufnum, lnum, col, off, curswant] = getcurpos()
     let curfile = expand('%:p')
