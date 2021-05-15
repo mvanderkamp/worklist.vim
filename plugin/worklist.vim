@@ -22,8 +22,15 @@ let g:worklist_qf_maxheight    = get(g:, 'worklist_qf_maxheight',    10)
 
 " This is the list of quickfix items which defines the 'worklist'
 let s:worklist = []
+
+" Keep track of which quickfix list is used for the most recent worklist, so
+" we can keep it up to date.
 let s:worklist_id = -1
+
+" Track the entry in the worklist that is currently selected
 let s:last_idx = 1
+
+" Window ID of the note popup window
 let s:notewinid = -1
 
 
