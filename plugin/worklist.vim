@@ -27,6 +27,13 @@ let s:last_idx = 1
 let s:notewinid = -1
 
 
+function! s:EchoError(msg) abort
+    echohl Error
+    echo a:msg
+    echohl None
+endfunction
+
+
 function! s:InQuickfix() abort
     return &filetype ==? 'qf'
 endfunction
@@ -40,7 +47,7 @@ endfunction
 " Add the current file and line number as a worklist item
 function! s:Add(note='') abort
     if s:InQuickfix()
-        echohl Error | echo 'Unable to add quickfix entries to the worklist.' | echohl None
+        call s:EchoError('Unable to add quickfix entries to the worklist.')
         return
     endif
     let [bufnum, lnum, col, off, curswant] = getcurpos()
@@ -86,7 +93,7 @@ function! s:ShowQf() abort
         execute 'copen ' .. l:height
         call s:ShowNotePopup(v:true)
     else
-        echohl Error | echo 'Worklist is empty' | echohl None
+        call s:EchoError('Worklist is empty')
     endif
 endfunction
 
@@ -126,10 +133,10 @@ endfunction
 " Toggle whether the current item in the worklist is 'completed'
 function! s:Toggle() abort
     if !s:InQuickfix()
-        echohl Error | echo 'Can only complete worklist items in the quickfix window!' | echohl None
+        call s:EchoError('Can only complete worklist items in the quickfix window!')
         return
     elseif !s:IsCurrentQuickfix()
-        echohl Error | echo 'The current quickfix window is not the worklist!' | echohl None
+        call s:EchoError('The current quickfix window is not the worklist!')
         return
     endif
 
@@ -148,10 +155,10 @@ endfunction
 " note: note to save for the current worklist item. If empty, prompt for one.
 function! s:Note(note='') abort
     if !s:InQuickfix()
-        echohl Error | echo 'Can only add notes to worklist items in the quickfix window!' | echohl None
+        call s:EchoError('Can only add notes to worklist items in the quickfix window!')
         return
     elseif !s:IsCurrentQuickfix()
-        echohl Error | echo 'The current quickfix window is not the worklist!' | echohl None
+        call s:EchoError('The current quickfix window is not the worklist!')
         return
     endif
 
@@ -210,10 +217,10 @@ endfunction
 " Remove the current item from the worklist
 function! s:Remove() abort
     if !s:InQuickfix()
-        echohl Error | echo 'Can only remove worklist items in the quickfix window!' | echohl None
+        call s:EchoError('Can only remove worklist items in the quickfix window!')
         return
     elseif !s:IsCurrentQuickfix()
-        echohl Error | echo 'The current quickfix window is not the worklist!' | echohl None
+        call s:EchoError('The current quickfix window is not the worklist!')
         return
     endif
 
@@ -285,7 +292,7 @@ function! s:Load(filename=g:worklist_file) abort
         let data = json_decode(readfile(dest)[0])
         let s:worklist = data
     else
-        echohl Error | echo 'No worklist file has been saved yet, unable to load.' | echohl None
+        call s:EchoError('No worklist file has been saved yet, unable to load.')
         let s:worklist = []
     endif
     call s:Update(' ', 1)
