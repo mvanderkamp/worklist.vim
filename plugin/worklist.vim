@@ -2,20 +2,23 @@
 " Maintainer: Michael van der Kamp
 " License: Same as vim
 
-if exists('g:loaded_worklist') || &cp || version < 800
+if exists('g:loaded_worklist') || &compatible || v:version < 800
     finish
 endif
 let g:loaded_worklist = 1
 
-" Prepare options
-let g:worklist_autoload = get(g:, 'worklist_autoload', v:true)
-let g:worklist_autosave = get(g:, 'worklist_autosave', v:true)
+
+" Prepare options. See doc for explanation. There's unfortunately no
+" satisfactory documentation generator for vim that I have found.
+let g:worklist_autoload        = get(g:, 'worklist_autoload',        v:true)
+let g:worklist_autosave        = get(g:, 'worklist_autosave',        v:true)
 let g:worklist_incomplete_text = get(g:, 'worklist_incomplete_text', '[ ]')
-let g:worklist_complete_text = get(g:, 'worklist_complete_text', '[X]')
-let g:worklist_dir = get(g:, 'worklist_dir', $HOME .. '/.vim')
-let g:worklist_file = get(g:, 'worklist_file', 'worklist.json')
-let g:worklist_popup_maxwidth = get(g:, 'worklist_popup_maxwidth', 60)
-let g:worklist_qf_maxheight = get(g:, 'worklist_qf_maxheight', 10)
+let g:worklist_complete_text   = get(g:, 'worklist_complete_text',   '[X]')
+let g:worklist_dir             = get(g:, 'worklist_dir',             $HOME .. '/.vim')
+let g:worklist_file            = get(g:, 'worklist_file',            'worklist.json')
+let g:worklist_popup_maxwidth  = get(g:, 'worklist_popup_maxwidth',  60)
+let g:worklist_qf_maxheight    = get(g:, 'worklist_qf_maxheight',    10)
+
 
 " This is the list of quickfix items which defines the 'worklist'
 let s:worklist = []
@@ -41,6 +44,7 @@ function! s:WorklistAdd(note='')
     call s:WorklistUpdate('r', '$')
 endfunction
 
+
 " Used to provide the custom formatting for the worklist items
 function! s:WorklistQfTextFunc(info)
     let lines = []
@@ -61,6 +65,7 @@ function! s:WorklistQfTextFunc(info)
     return lines
 endfunction
 
+
 " Display the worklist in the quickfix window
 function! s:WorklistShowQf()
     call s:WorklistUpdate(' ')
@@ -72,6 +77,7 @@ function! s:WorklistShowQf()
         echohl Error | echo 'Worklist is empty' | echohl None
     endif
 endfunction
+
 
 " Only update the worklist, don't force it to be visible
 function! s:WorklistUpdate(action='r', idx=s:last_idx)
@@ -102,6 +108,7 @@ function! s:WorklistUpdate(action='r', idx=s:last_idx)
     endif
 endfunction
 
+
 " Toggle whether the current item in the worklist is 'completed'
 function! s:WorklistToggle()
     if &filetype != 'qf'
@@ -120,6 +127,7 @@ function! s:WorklistToggle()
     let s:worklist[index].valid = !s:worklist[index].valid
     call s:WorklistUpdate('r', index + 1)
 endfunction
+
 
 " Add a note to this worklist item
 "
@@ -153,6 +161,7 @@ function! s:WorklistNote(note='')
     call s:WorklistShowNotePopup(v:true)
 endfunction
 
+
 " Show a popup with the note for the current worklist item
 function! s:WorklistShowNotePopup(force=v:false)
     if getqflist({'title': 1}).title == 'worklist'
@@ -177,10 +186,12 @@ function! s:WorklistShowNotePopup(force=v:false)
     endif
 endfunction
 
+
 " Close the note popup
 function! s:WorklistCloseNotePopup()
     call popup_close(s:notewinid)
 endfunction
+
 
 " Remove the current item from the worklist
 function! s:WorklistRemove()
@@ -201,6 +212,7 @@ function! s:WorklistRemove()
     call s:WorklistUpdate('r', index)
 endfunction
 
+
 " Compares two worklist items. Used for sorting.
 function! s:WorklistSort_cmpfunc(left, right)
     let lname = fnamemodify(a:left.filename, ':p:.')
@@ -215,16 +227,19 @@ function! s:WorklistSort_cmpfunc(left, right)
     return float2nr(ceil(a:left.lnum - a:right.lnum))
 endfunction
 
+
 " Sort the worklist according to file name then line number
 function! s:WorklistSort()
     call sort(s:worklist, '<SID>WorklistSort_cmpfunc')
     call s:WorklistUpdate('r', 1)
 endfunction
 
+
 " Get the full worklist file path
 function! s:WorklistFile(filename)
     return g:worklist_dir .. '/' .. a:filename
 endfunction
+
 
 " Save the worklist
 function! s:WorklistSave(filename=g:worklist_file)
@@ -238,6 +253,7 @@ function! s:WorklistSave(filename=g:worklist_file)
     let data = json_encode(s:worklist)
     call writefile([data], dest)
 endfunction
+
 
 " Load the worklist
 function! s:WorklistLoad(filename=g:worklist_file)
@@ -261,6 +277,7 @@ function! s:WorklistLoad(filename=g:worklist_file)
     call s:WorklistUpdate(' ', 1)
 endfunction
 
+
 " autoload
 if g:worklist_autoload
     augroup worklist_autoload_autocmds
@@ -269,6 +286,7 @@ if g:worklist_autoload
     augroup END
 endif
 
+
 " autosave
 if g:worklist_autosave
     augroup worklist_autosave_autocmds
@@ -276,6 +294,7 @@ if g:worklist_autosave
         autocmd VimLeave * call s:WorklistSave()
     augroup END
 endif
+
 
 function! s:WorklistStartPopupAutocmds()
     if getqflist({'winid': 0}).winid != win_getid()
@@ -289,10 +308,12 @@ function! s:WorklistStartPopupAutocmds()
     augroup END
 endfunction
 
+
 augroup worklist_window_autocmds
     autocmd!
     autocmd FileType qf call s:WorklistStartPopupAutocmds()
 augroup END
+
 
 " Define ex commands for the primary functions
 command! -nargs=* WorklistAdd call <SID>WorklistAdd("<args>")
