@@ -61,10 +61,11 @@ COMMANDS                                        *worklist-commands*
 ------------------------------------------------------------------------------
                                                 *worklist-:WorklistNote*
 :WorklistNote [{note}]
-    To be called while in the quickfix window and it is showing the worklist.
-    Lets you add a note to clarify the current worklist item. Notes for the
-    current item will be shown in a popup window when in the worklist. If no
-    {note} is provided, opens a prompt for one.
+    If called from the quickfix window, lets you add a note to clarify the
+    current worklist item. If called from some other window, adds a worklist
+    item for the current line with the given {note}. Notes for the current
+    item will be shown in a popup window when in the worklist. If no {note} is
+    provided, opens a prompt for one.
 
 ------------------------------------------------------------------------------
                                                 *worklist-:WorklistRemove*
