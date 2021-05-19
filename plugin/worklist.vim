@@ -113,6 +113,8 @@ function! s:Update(action='r', idx=s:last_idx) abort
         " The worklist has not yet been loaded into a quickfix list, need to
         " do so. The ' ' action accomplishes this.
         let l:action = ' '
+    elseif a:action == ' ' && getqflist({'title': 0}).title == title
+        let l:action = 'r'
     else
         " The worklist exists in a quickfix list, so 'r' and 'a' actions are
         " acceptable, as well as the ' ' action.
