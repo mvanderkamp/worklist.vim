@@ -163,15 +163,18 @@ endfunction
 "
 " note: note to save for the current worklist item. If empty, prompt for one.
 function! s:Note(note='') abort
-    if !s:InQuickfix()
-        call s:EchoError('Can only add notes to worklist items in the quickfix window!')
-        return
-    elseif !s:IsCurrentQuickfix()
+    if !s:IsCurrentQuickfix()
         call s:EchoError('The current quickfix window is not the worklist!')
         return
     endif
 
-    let index = line('.') - 1
+    if !s:InQuickfix()
+        let index = len(s:worklist)
+        call s:Add()
+    else
+        let index = line('.') - 1
+    endif
+
     if index >= len(s:worklist)
         return
     endif
@@ -188,7 +191,10 @@ function! s:Note(note='') abort
     endif
 
     call s:Update('r', index + 1)
-    call s:ShowNotePopup(v:true)
+
+    if s:InQuickfix()
+        call s:ShowNotePopup(v:true)
+    endif
 endfunction
 
 
