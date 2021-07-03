@@ -28,7 +28,7 @@ let s:worklist = []
 let s:worklist_id = -1
 
 " Track the entry in the worklist that is currently selected
-let s:last_idx = 1
+let s:last_idx = 0
 
 " Window ID of the note popup window
 let s:notewinid = -1
@@ -51,23 +51,58 @@ function! s:IsCurrentQuickfix() abort
 endfunction
 
 
+""
+" Checks whether the current file and line number already has an entry in the
+" worklist.
+""
+function! s:EntryIndex(filename, lnum, text) abort
+    let index = 0
+    for entry in s:worklist
+        if entry.filename == a:filename
+                    \ && entry.lnum == a:lnum
+                    \ && entry.text == a:text
+            " ugh
+            return index
+        endif
+        let index += 1
+    endfor
+    return -1
+endfunction
+
+
 " Add the current file and line number as a worklist item
 function! s:Add(note='') abort
     if s:InQuickfix()
         call s:EchoError('Unable to add quickfix entries to the worklist.')
         return
     endif
-    let [bufnum, lnum, col, off, curswant] = getcurpos()
-    let curfile = expand('%:p')
-    call add(s:worklist, {
-                \   'filename': curfile,
-                \   'lnum': lnum,
-                \   'col': col,
-                \   'note': a:note,
-                \   'text': trim(getline(lnum)),
-                \   'valid': v:true,
-                \ })
-    call s:Update('r', '$')
+    let lnum = line('.')
+    let filename = expand('%:p')
+    let text = trim(getline(lnum))
+    let index = s:EntryIndex(filename, lnum, text)
+    let what = {
+        \   'filename': filename,
+        \   'lnum': lnum,
+        \   'text': text,
+        \   'valid': v:true,
+        \ }
+
+    " Only update the note if one was provided
+    if ! empty(trim(a:note))
+        let what.note = a:note
+    endif
+
+    if index < 0
+        call add(s:worklist, what)
+        let index = len(s:worklist) - 1
+        echo 'Worklist entry added'
+    else
+        call extend(s:worklist[index], what, 'force')
+        echo 'Worklist entry updated'
+    endif
+
+    call s:Update('r', index + 1)
+    return index
 endfunction
 
 
@@ -106,7 +141,7 @@ endfunction
 
 
 " Only update the worklist, don't force it to be visible
-function! s:Update(action='r', idx=s:last_idx) abort
+function! s:Update(action='r', idx='') abort
     let title = 'worklist: ' .. s:File(g:worklist_file)
 
     if s:worklist_id == -1
@@ -125,9 +160,12 @@ function! s:Update(action='r', idx=s:last_idx) abort
         \   'title': title,
         \   'context': title,
         \   'items': s:worklist,
-        \   'idx': a:idx,
         \   'quickfixtextfunc': function('<SID>QfTextFunc'),
         \ }
+
+    if ! empty(a:idx)
+        let what.idx = a:idx
+    endif
 
     if action == ' '
         call setqflist([], l:action, what)
@@ -164,8 +202,7 @@ endfunction
 " note: note to save for the current worklist item. If empty, prompt for one.
 function! s:Note(note='') abort
     if !s:InQuickfix()
-        let index = len(s:worklist)
-        call s:Add()
+        let index = s:Add()
     else
         if !s:IsCurrentQuickfix()
             call s:EchoError('The current quickfix window is not the worklist!')
