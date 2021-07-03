@@ -163,15 +163,14 @@ endfunction
 "
 " note: note to save for the current worklist item. If empty, prompt for one.
 function! s:Note(note='') abort
-    if !s:IsCurrentQuickfix()
-        call s:EchoError('The current quickfix window is not the worklist!')
-        return
-    endif
-
     if !s:InQuickfix()
         let index = len(s:worklist)
         call s:Add()
     else
+        if !s:IsCurrentQuickfix()
+            call s:EchoError('The current quickfix window is not the worklist!')
+            return
+        endif
         let index = line('.') - 1
     endif
 
