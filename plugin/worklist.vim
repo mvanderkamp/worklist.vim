@@ -163,6 +163,10 @@ function! s:Update(action='r', idx='') abort
         \   'quickfixtextfunc': function('<SID>QfTextFunc'),
         \ }
 
+    if s:worklist_id != -1
+        let what.idx = get(getqflist({'id': s:worklist_id, 'idx': 0}), 'idx', 0)
+    endif
+
     if ! empty(a:idx)
         let what.idx = a:idx
     endif
