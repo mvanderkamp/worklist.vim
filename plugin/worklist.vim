@@ -14,11 +14,23 @@ let g:worklist_autoload        = get(g:, 'worklist_autoload',        v:true)
 let g:worklist_autosave        = get(g:, 'worklist_autosave',        v:true)
 let g:worklist_incomplete_text = get(g:, 'worklist_incomplete_text', '[ ]')
 let g:worklist_complete_text   = get(g:, 'worklist_complete_text',   '[X]')
-let g:worklist_dir             = get(g:, 'worklist_dir',             $HOME .. '/.vim')
+let g:worklist_dir             = get(g:, 'worklist_dir',             v:none)
 let g:worklist_file            = get(g:, 'worklist_file',            'worklist.json')
 let g:worklist_popup_maxwidth  = get(g:, 'worklist_popup_maxwidth',  60)
 let g:worklist_qf_maxheight    = get(g:, 'worklist_qf_maxheight',    10)
 
+
+if g:worklist_dir == v:none
+    " Find the first directory in runtimepath that exists and use that. Bit of
+    " a hack.
+    for entry in split(&runtimepath, ',')
+        if isdirectory(entry)
+            let g:worklist_dir = entry
+            echo 'Saving worklist files to ' .. entry
+            break
+        endif
+    endfor
+endif
 
 " This is the list of quickfix items which defines the 'worklist'
 let s:worklist = []
