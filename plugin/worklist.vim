@@ -356,8 +356,13 @@ function! s:Load(filename=g:worklist_file) abort
     let g:worklist_file = l:filename
     let dest = s:File(l:filename)
     if filereadable(dest)
-        let data = json_decode(readfile(dest)[0])
-        let s:worklist = data
+        let contents = readfile(dest)
+        if empty(contents)
+            let s:worklist = []
+        else
+            let data = json_decode(contents[0])
+            let s:worklist = data
+        endif
     else
         call s:EchoError('No worklist file has been saved yet, unable to load.')
         let s:worklist = []
